@@ -1,11 +1,8 @@
 plugins {
-    id 'com.github.blindpirate.gogradle' version '0.7.0'
+    id 'org.echocat.golang' version '0.1.15'
 }
 
-golang {
-    packagePath = 'github.com/HearthProject/OneClientPreLauncher' // go import path of project to be built, NOT local file system path!
-    goVersion = '1.9'
-}
+group 'github.com/HearthProject/OneClientPreLauncher'
 
 version = "0.0.1"
 
@@ -14,17 +11,17 @@ if (ENV.BUILD_NUMBER) {
     version = version + "." + "${System.getenv().BUILD_NUMBER}"
 }
 
-build {
-    targetPlatform = ['windows-amd64', 'darwin-amd64', 'windows-386', 'linux-amd64']//, 'linux-arm64', 'linux-386', 'linux-arm', 'freebsd-386', 'freebsd-amd64', 'solaris-amd64']
-    outputLocation = './build/out/OneClient-' + version + '-${GOOS}_${GOARCH}${GOEXE}'
-}
-
-
-dependencies {
-    golang {
+golang {
+    dependencies {
         build 'github.com/shibukawa/configdir'
-    }
-    golang {
         build 'github.com/jmoiron/jsonq'
     }
+    build {
+        outputFilenamePattern = project.getBuildDir().getPath() + '/out/OneClient-' + version + '-%{platform}%{extension}'
+        excludes = ['.git/**', 'build.gradle', 'build/**', '.gradle/**', 'gradle/**', 'data/**', '.gitignore', '.gradlew', '.gradlew.bat', 'README.md']
+    }
+    toolchain {
+        goversion = 'go1.9'
+    }
+    platforms = System.getProperty("platforms", "windows-amd64,darwin-amd64,linux-amd64")
 }
