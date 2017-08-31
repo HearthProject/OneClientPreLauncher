@@ -1,0 +1,30 @@
+plugins {
+    id 'org.echocat.golang' version '0.1.15'
+}
+
+group 'github.com/HearthProject/OneClientPreLauncher'
+
+version = "0.0.1"
+
+def ENV = System.getenv()
+if (ENV.BUILD_NUMBER) {
+    version = version + "." + "${System.getenv().BUILD_NUMBER}"
+}
+
+golang {
+    dependencies {
+        build 'github.com/shibukawa/configdir'
+        build 'github.com/go-toast/toast'
+        build 'github.com/jmoiron/jsonq'
+        build 'github.com/mholt/archiver'
+        build 'github.com/josephspurrier/goversioninfo'
+    }
+    build {
+        outputFilenamePattern = project.getBuildDir().getPath() + '/out/OneClient-' + version + '-%{platform}%{extension}'
+        excludes = ['.git/**', 'build.gradle', 'build/**', '.gradle/**', 'gradle/**', 'data/**', '.gitignore', '.gradlew', '.gradlew.bat', 'README.md']
+    }
+    toolchain {
+        goversion = 'go1.9'
+    }
+    platforms = System.getProperty("platforms", "linux-amd64,linux-386,windows-amd64,windows-386,darwin-amd64")
+}

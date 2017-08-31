@@ -1,0 +1,15 @@
+# Ignore everything
+/*
+!/utils/
+!/.gitignore
+!/LICENSE
+!/main.go
+!/README.md
+!/gradle/
+!/build.gradle
+!/gradlew
+!/gradlew.bat
+!/versioninfo.json
+!/resource.syso
+!/icon.ico
+!/Jenkinsfile
