@@ -15,7 +15,7 @@ if (ENV.BUILD_NUMBER) {
 }
 
 build {
-    targetPlatform = ['windows-amd64']//, 'linux-amd64', 'linux-386', 'linux-arm', 'linux-arm64', 'darwin-amd64', 'windows-386', 'freebsd-386', 'freebsd-amd64', 'solaris-amd64']
+    targetPlatform = ['windows-amd64', 'darwin-amd64', 'windows-386', 'linux-arm64']//, 'linux-amd64', 'linux-386', 'linux-arm', 'freebsd-386', 'freebsd-amd64', 'solaris-amd64']
     outputLocation = './build/out/OneClient-' + version + '-${GOOS}_${GOARCH}${GOEXE}'
 }
 
