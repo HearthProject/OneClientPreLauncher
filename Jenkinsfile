@@ -7,7 +7,7 @@ node {
 
    sh "rm -rf build/out/"
    sh "chmod +x gradlew"
-   sh "./gradlew build"
+   sh "./gradlew build --stacktrace"
 
    stage "Archive artifacts"
 
