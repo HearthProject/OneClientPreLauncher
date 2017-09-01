@@ -14,6 +14,7 @@ import (
 
 func main(){
 	fmt.Println("Starting One Client!")
+	fmt.Println("Pre-Launcher version " + Version)
 
 	fmt.Println("Checking for new version!")
 	versionJson, err := utils.GetString("http://hearthproject.uk/files/versions.json")

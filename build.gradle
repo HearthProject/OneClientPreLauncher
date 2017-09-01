@@ -11,6 +11,8 @@ if (ENV.BUILD_NUMBER) {
     version = version + "." + "${System.getenv().BUILD_NUMBER}"
 }
 
+setVersion()
+
 golang {
     dependencies {
         build 'github.com/shibukawa/configdir'
@@ -29,6 +31,8 @@ golang {
 import groovy.json.JsonOutput
 import java.security.MessageDigest
 import org.apache.tools.ant.taskdefs.condition.Os
+import org.apache.commons.io.FileUtils
+import java.io.File
 
 task buildInfo() {
 	doLast {
@@ -39,7 +43,16 @@ task buildInfo() {
 
 		buildInfo['files'] = getFileData()
 
-		new File(project.getBuildDir().getPath() + "/out/" + project.version  + "-fileData.json").write JsonOutput.prettyPrint(JsonOutput.toJson(buildInfo))
+		def jsonFile = new File(project.getBuildDir().getPath() + "/out/" + project.version  + "-fileData.json")
+		jsonFile.write JsonOutput.prettyPrint(JsonOutput.toJson(buildInfo))
+
+		def launcherInfo = new TreeMap<String,Object>()
+		launcherInfo['version'] = project.version
+		launcherInfo['versionJsonURL'] = "http://hearthproject.uk/files/launcher/versions/" + project.version  + "-fileData.json"
+		launcherInfo['versionSha1'] = calcSha1(jsonFile)
+		launcherInfo['versionSha256'] = calcSha256(jsonFile)
+
+		new File(project.getBuildDir().getPath() + "/out/latest.json").write JsonOutput.prettyPrint(JsonOutput.toJson(launcherInfo))
 	}
 }
 
@@ -101,4 +114,26 @@ def ShrinkFile(file) {
 	}
 }
 
+def setVersion(){
+	def file = new File("version.go")
+	def oldFile = new File("version.go.old")
+	def data = FileUtils.readFileToString(file)
+	FileUtils.writeStringToFile(file, data.replace("%VERSION%", project.version))
+	FileUtils.writeStringToFile(oldFile, data)
+}
+
+def restoreVersionFile(){
+	def file = new File("version.go")
+	def oldFile = new File("version.go.old")
+	FileUtils.writeStringToFile(file, FileUtils.readFileToString(oldFile))
+	oldFile.delete()
+}
+
+task restoreVerison(){
+	doLast {
+		restoreVersionFile()
+	}
+}
+
 build.finalizedBy buildInfo
+buildInfo.finalizedBy restoreVerison
