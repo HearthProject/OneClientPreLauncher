@@ -14,3 +14,7 @@
 !/icon.ico
 !/Jenkinsfile
 !/gradle.properties
+!/icon.icns
+!/appify
+!/Info.plist
+!/makeApp.sh
