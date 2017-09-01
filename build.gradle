@@ -63,6 +63,7 @@ def getFileInfo(platform){
 	fileInfo['sha256'] = calcSha256(file)
 	fileInfo['size'] = file.length()
 	fileInfo['version'] = project.version
+	fileInfo['url'] = "http://hearthproject.uk/files/launcher/versions/" + file.name
 
 	return fileInfo
 }
