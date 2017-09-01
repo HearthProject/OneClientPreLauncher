@@ -28,6 +28,7 @@ golang {
 
 import groovy.json.JsonOutput
 import java.security.MessageDigest
+import org.apache.tools.ant.taskdefs.condition.Os
 
 task buildInfo() {
 	doLast {
@@ -56,6 +57,7 @@ def getFileData() {
 
 def getFileInfo(platform){
 	def file = new File(project.getBuildDir().getPath() + "/out/OneClient-" + project.version + "-" + platform)
+	ShrinkFile(file)
 	def fileInfo = new TreeMap<String,Object>()
 	fileInfo['platform'] = platform
 	fileInfo['filename'] = file.name
@@ -82,6 +84,21 @@ def calcSha256(file) {
 		md.update(bytes, 0, size)
 	}
 	return md.digest().collect {String.format "%02x", it}.join()
+}
+
+def ShrinkFile(file) {
+	if (Os.isFamily(Os.FAMILY_MAC)) {
+		project.logger.lifecycle("Shrinking isnt suppored on OSX " + file)
+		return
+	}
+	project.logger.lifecycle("Shrinking " + file)
+	exec {
+		if (Os.isFamily(Os.FAMILY_UNIX)) {
+			commandLine './upx/upx', file
+		} else if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+			commandLine './upx/upx.exe', file
+		}
+	}
 }
 
 build.finalizedBy buildInfo
