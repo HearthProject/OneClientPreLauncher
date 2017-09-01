@@ -1,6 +1,19 @@
-plugins {
-    id 'org.echocat.golang' version '0.1.15'
+buildscript {
+	repositories  {
+		mavenCentral()
+		flatDir dirs: "libs"
+	}
+	dependencies {
+		classpath 'plugin:plugin:0.1.17'
+		classpath 'commons-io:commons-io:2.5'
+		classpath 'org.apache.commons:commons-lang3:3.6'
+		classpath 'org.codehaus.plexus:plexus-utils:3.1.0'
+		classpath group: 'com.google.code.gson', name: 'gson', version: '2.8.1'
+		classpath group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.8.0.201706111038-r'
+	}
 }
+
+apply plugin: 'org.echocat.golang'
 
 group 'github.com/HearthProject/OneClientPreLauncher'
 
@@ -22,6 +35,7 @@ golang {
     build {
         outputFilenamePattern = project.getBuildDir().getPath() + '/out/OneClient-' + version + '-%{platform}%{extension}'
         excludes = ['.git/**', 'build.gradle', 'build/**', '.gradle/**', 'gradle/**', 'data/**', '.gitignore', '.gradlew', '.gradlew.bat', 'README.md']
+		arguments = ["-ldflags=\"-H=windowsgui\""]
     }
     toolchain {
         goversion = 'go1.9'

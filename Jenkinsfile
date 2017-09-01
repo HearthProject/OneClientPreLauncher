@@ -5,7 +5,7 @@ node {
 
    stage 'Build'
 
-   sh "rm -rf build/out/"
+   sh "rm -rf build/"
    sh "chmod +x gradlew"
    sh "chmod +x upx/upx"
    sh "./gradlew build --stacktrace"

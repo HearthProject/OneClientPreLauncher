@@ -1,4 +1,7 @@
 //go:generate goversioninfo -icon=icon.ico
+
+// go build -ldflags="-H windowsgui"
+
 package main
 
 import (
@@ -48,7 +51,12 @@ func main(){
 	}
 
 	fmt.Println("Starting...")
-	exec := exec.Command("java", "-jar", jarFile, "-native_launch")
+	javaExec := "java"
+	if runtime.GOOS == "windows" {
+		javaExec = "javaw"
+	}
+
+	exec := exec.Command(javaExec, "-jar", jarFile, "-native_launch")
 	exec.Dir = saveDir
 	er := exec.Start()
 	if er != nil {
