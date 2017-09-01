@@ -19,3 +19,4 @@
 !/Info.plist
 !/makeApp.sh
 !/upx/
+!/version.go
