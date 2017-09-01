@@ -23,5 +23,64 @@ golang {
     toolchain {
         goversion = 'go1.9'
     }
-    platforms = System.getProperty("platforms", "windows-amd64,darwin-amd64,linux-amd64")
+    platforms = System.getProperty("platforms", "windows-amd64,windows-386,darwin-amd64,linux-amd64,linux-386")
 }
+
+import groovy.json.JsonOutput
+import java.security.MessageDigest
+
+task buildInfo() {
+	doLast {
+		def buildInfo = new TreeMap<String,Object>()
+		buildInfo['name'] = project.name
+		buildInfo['version'] = project.version
+		buildInfo['date'] = new Date()
+
+		buildInfo['files'] = getFileData()
+
+		new File(project.getBuildDir().getPath() + "/out/" + project.version  + "-fileData.json").write JsonOutput.prettyPrint(JsonOutput.toJson(buildInfo))
+	}
+}
+
+def getFileData() {
+	def fileData = new TreeMap<String,Object>()
+
+	fileData['windows-386'] = getFileInfo("windows-386.exe")
+	fileData['windows-amd64'] = getFileInfo("windows-amd64.exe")
+	fileData['darwin-amd64'] = getFileInfo("darwin-amd64")
+	fileData['linux-amd64'] = getFileInfo("linux-amd64")
+	fileData['linux-linux-386'] = getFileInfo("linux-386")
+
+	return fileData
+}
+
+def getFileInfo(platform){
+	def file = new File(project.getBuildDir().getPath() + "/out/OneClient-" + project.version + "-" + platform)
+	def fileInfo = new TreeMap<String,Object>()
+	fileInfo['platform'] = platform
+	fileInfo['filename'] = file.name
+	fileInfo['sha1'] = calcSha1(file)
+	fileInfo['sha256'] = calcSha256(file)
+	fileInfo['size'] = file.length()
+	fileInfo['version'] = project.version
+
+	return fileInfo
+}
+
+def calcSha1(file) {
+	MessageDigest md = MessageDigest.getInstance("SHA-1")
+	file.eachByte 4096, {bytes, size ->
+		md.update(bytes, 0, size)
+	}
+	return md.digest().collect {String.format "%02x", it}.join()
+}
+
+def calcSha256(file) {
+	MessageDigest md = MessageDigest.getInstance("SHA-256")
+	file.eachByte 4096, {bytes, size ->
+		md.update(bytes, 0, size)
+	}
+	return md.digest().collect {String.format "%02x", it}.join()
+}
+
+build.finalizedBy buildInfo
