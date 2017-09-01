@@ -17,6 +17,7 @@ golang {
     dependencies {
         build 'github.com/shibukawa/configdir'
         build 'github.com/jmoiron/jsonq'
+		build 'github.com/inconshreveable/go-update'
     }
     build {
         outputFilenamePattern = project.getBuildDir().getPath() + '/out/OneClient-' + version + '-%{platform}%{extension}'
@@ -115,16 +116,16 @@ def ShrinkFile(file) {
 }
 
 def setVersion(){
-	def file = new File("version.go")
-	def oldFile = new File("version.go.old")
+	def file = new File("utils/version.go")
+	def oldFile = new File("utils/version.go.old")
 	def data = FileUtils.readFileToString(file)
 	FileUtils.writeStringToFile(file, data.replace("%VERSION%", project.version))
 	FileUtils.writeStringToFile(oldFile, data)
 }
 
 def restoreVersionFile(){
-	def file = new File("version.go")
-	def oldFile = new File("version.go.old")
+	def file = new File("utils/version.go")
+	def oldFile = new File("utils/version.go.old")
 	FileUtils.writeStringToFile(file, FileUtils.readFileToString(oldFile))
 	oldFile.delete()
 }

@@ -18,3 +18,10 @@ func GetStringValue(jsonStr string, key string) (string) {
 	return str
 }
 
+func GetQuery(jsonStr string) (*jsonq.JsonQuery) {
+	data := map[string]interface{}{}
+	dec := json.NewDecoder(strings.NewReader(jsonStr))
+	dec.Decode(&data)
+	return jsonq.NewQuery(data)
+}
+
