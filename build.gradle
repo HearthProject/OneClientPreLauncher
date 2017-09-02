@@ -85,7 +85,7 @@ def getFileData() {
 
 def getFileInfo(platform){
 	def file = new File(project.getBuildDir().getPath() + "/out/OneClient-" + project.version + "-" + platform)
-	ShrinkFile(file)
+	//ShrinkFile(file)
 	def fileInfo = new TreeMap<String,Object>()
 	fileInfo['platform'] = platform
 	fileInfo['filename'] = file.name
