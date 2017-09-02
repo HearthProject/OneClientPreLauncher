@@ -67,7 +67,7 @@ func main(){
 
 
 func checkForUpdate(currentVersion string, platform string){
-	json, err := utils.GetString("http://hearthproject.uk/files/launcher/versions/latest.json")
+	json, err := utils.GetString("http://hearthproject.uk/files/launcher/prelauncher_versions.json")
 	if err != nil {
 		println(err)
 	}

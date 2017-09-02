@@ -67,7 +67,7 @@ task buildInfo() {
 		launcherInfo['versionSha1'] = calcSha1(jsonFile)
 		launcherInfo['versionSha256'] = calcSha256(jsonFile)
 
-		new File(project.getBuildDir().getPath() + "/out/latest.json").write JsonOutput.prettyPrint(JsonOutput.toJson(launcherInfo))
+		new File(project.getBuildDir().getPath() + "/out/prelauncher_versions.json").write JsonOutput.prettyPrint(JsonOutput.toJson(launcherInfo))
 	}
 }
 
