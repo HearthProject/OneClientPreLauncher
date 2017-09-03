@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [ "$1" = "-h" -o "$1" = "--help" -o -z "$1" ]; then cat <<EOF
 appify v3.0.1 for Mac OS X - http://mths.be/appify
 Creates the simplest possible Mac app from a shell script.
