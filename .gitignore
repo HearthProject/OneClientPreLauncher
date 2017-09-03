@@ -18,7 +18,6 @@
 !/appify
 !/Info.plist
 !/makeApp.sh
-!/upx/
 !/version.go
 /utils/version.go.old
 !/libs/

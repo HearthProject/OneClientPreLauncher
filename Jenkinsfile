@@ -8,7 +8,7 @@ node {
    sh "rm -rf build/"
    sh "chmod +x gradlew"
    sh "chmod +x upx/upx"
-   sh "./gradlew build --stacktrace"
+   sh "./gradlew build awsUpload --stacktrace"
 
    stage "OSX Archive"
 

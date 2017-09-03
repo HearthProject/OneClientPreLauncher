@@ -28,7 +28,7 @@ func main(){
 	checkForUpdate(utils.Version, platform)
 
 	fmt.Println("Checking for oneclient update")
-	versionJson, err := utils.GetString("http://hearthproject.uk/files/versions.json")
+	versionJson, err := utils.GetString("https://s3.eu-west-2.amazonaws.com/hearthstorage.hearthproject.uk/oneclient/versions.json")
 	if err != nil {
 		println(err)
 	}
@@ -67,7 +67,7 @@ func main(){
 
 
 func checkForUpdate(currentVersion string, platform string){
-	json, err := utils.GetString("http://hearthproject.uk/files/launcher/prelauncher_versions.json")
+	json, err := utils.GetString("https://s3.eu-west-2.amazonaws.com/hearthstorage.hearthproject.uk/oneclient/launcher/prelauncher_versions.json")
 	if err != nil {
 		println(err)
 	}
