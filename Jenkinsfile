@@ -11,7 +11,9 @@ node {
 
    stage "OSX Archive"
 
-   sh "./makeApp.sh 0.0.1.${env.BUILD_NUMBER}"
+   sh "./makeApp.sh 0.0.2.${env.BUILD_NUMBER}"
+
+   sh "./gradlew awsOSXUpload --stacktrace"
 
    stage "Archive artifacts"
 
