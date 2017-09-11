@@ -1,4 +1,4 @@
 package utils
 
-const Version = "%VERSION%"
+const Version = "0.0.2"
 

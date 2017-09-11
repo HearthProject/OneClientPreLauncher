@@ -10,7 +10,7 @@ buildscript {
 		classpath 'org.codehaus.plexus:plexus-utils:3.1.0'
 		classpath 'com.google.code.gson:gson:2.8.1'
 		classpath 'org.eclipse.jgit:org.eclipse.jgit:4.8.0.201706111038-r'
-		classpath 'com.amazonaws:aws-java-sdk:1.11.186'
+		classpath 'commons-net:commons-net:3.3'
 	}
 }
 
@@ -51,9 +51,9 @@ import java.security.MessageDigest
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.apache.commons.io.FileUtils
 import java.io.File
-import com.amazonaws.services.s3.AmazonS3Client
-import com.amazonaws.auth.BasicAWSCredentials
-import com.amazonaws.services.s3.model.CannedAccessControlList
+import org.apache.commons.net.ftp.FTPClient
+import org.apache.commons.net.ftp.FTP
+
 
 task buildInfo() {
 	doLast {
@@ -69,7 +69,7 @@ task buildInfo() {
 
 		def launcherInfo = new TreeMap<String,Object>()
 		launcherInfo['version'] = project.version
-		launcherInfo['versionJsonURL'] = "https://s3.eu-west-2.amazonaws.com/hearthstorage.hearthproject.uk/oneclient/launcher/versions/" + project.version  + "-fileData.json"
+		launcherInfo['versionJsonURL'] = "http://fdn.redstone.tech/theoneclient/oneclient/launcher/versions/" + project.version  + "-fileData.json"
 		launcherInfo['versionSha1'] = calcSha1(jsonFile)
 		launcherInfo['versionSha256'] = calcSha256(jsonFile)
 
@@ -98,7 +98,7 @@ def getFileInfo(platform){
 	fileInfo['sha256'] = calcSha256(file)
 	fileInfo['size'] = file.length()
 	fileInfo['version'] = project.version
-	fileInfo['url'] = "https://s3.eu-west-2.amazonaws.com/hearthstorage.hearthproject.uk/oneclient/launcher/versions/" + file.name
+	fileInfo['url'] = "http://fdn.redstone.tech/theoneclient/oneclient/launcher/versions/" + file.name
 	return fileInfo
 }
 
@@ -144,28 +144,32 @@ task restoreVerison(){
 	}
 }
 
-def uploadFileToS3(file, location){
-	project.logger.lifecycle("Uploading " + file + " to aws s3")
-	def s3 = new AmazonS3Client(new BasicAWSCredentials(project.getProperty('aws_access_key'), project.getProperty('aws_secret_key')))
-	s3.putObject("hearthstorage.hearthproject.uk", location + "/" + file.name , file)
-	s3.setObjectAcl("hearthstorage.hearthproject.uk", location + "/" + file.name, CannedAccessControlList.PublicRead)
+def uploadFileToCR(file, location){
+	project.logger.lifecycle("Uploading " + file + " to creeperrepo")
+	def ftp = new FTPClient()
+	def host = project.getProperty('cr_host').toString()
+	ftp.connect(host)
+	ftp.login(project.getProperty('cr_user').toString(), project.getProperty('cr_pass').toString())
+	ftp.setFileType(FTP.BINARY_FILE_TYPE)
+	ftp.enterLocalPassiveMode()
+	ftp.storeFile(location + "/" + file.name, new FileInputStream(file))
 }
 
-task awsUpload(){
+task crUpload(){
 	doLast {
-		uploadFileToS3(getBinFile("windows-386.exe"), "oneclient/launcher/versions")
-		uploadFileToS3(getBinFile("windows-amd64.exe"), "oneclient/launcher/versions")
-		uploadFileToS3(getBinFile("darwin-amd64"), "oneclient/launcher/versions")
-		uploadFileToS3(getBinFile("linux-amd64"), "oneclient/launcher/versions")
-		uploadFileToS3(getBinFile("linux-386"), "oneclient/launcher/versions")
-		uploadFileToS3(getBinFile("linux-386"), "oneclient/launcher/versions")
-		uploadFileToS3(new File(project.getBuildDir().getPath() + "/out/" + project.version  + "-fileData.json"), "oneclient/launcher/versions")
+		uploadFileToCR(getBinFile("windows-386.exe"), "oneclient/launcher/versions")
+		uploadFileToCR(getBinFile("windows-amd64.exe"), "oneclient/launcher/versions")
+		uploadFileToCR(getBinFile("darwin-amd64"), "oneclient/launcher/versions")
+		uploadFileToCR(getBinFile("linux-amd64"), "oneclient/launcher/versions")
+		uploadFileToCR(getBinFile("linux-386"), "oneclient/launcher/versions")
+		uploadFileToCR(getBinFile("linux-386"), "oneclient/launcher/versions")
+		uploadFileToCR(new File(project.getBuildDir().getPath() + "/out/" + project.version  + "-fileData.json"), "oneclient/launcher/versions")
 	}
 }
 
-task awsOSXUpload() {
+task crOSXUpload() {
 	doLast {
-		uploadFileToS3(new File(project.getBuildDir().getPath() + "/out/OneClient-" + project.version  + "-osx.zip"), "oneclient/launcher/versions")
+		uploadFileToCR(new File(project.getBuildDir().getPath() + "/out/OneClient-" + project.version  + "-osx.zip"), "oneclient/launcher/versions")
 	}
 }
 

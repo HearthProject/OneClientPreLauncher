@@ -7,13 +7,13 @@ node {
 
    sh "rm -rf build/"
    sh "chmod +x gradlew"
-   sh "./gradlew build awsUpload --stacktrace"
+   sh "./gradlew build crUpload --stacktrace"
 
    stage "OSX Archive"
 
    sh "./makeApp.sh 0.0.2.${env.BUILD_NUMBER}"
 
-   sh "./gradlew awsOSXUpload --stacktrace"
+   sh "./gradlew crOSXUpload --stacktrace"
 
    stage "Archive artifacts"
 
