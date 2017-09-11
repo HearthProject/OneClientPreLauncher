@@ -19,7 +19,7 @@ apply plugin: 'org.echocat.golang'
 group 'github.com/HearthProject/OneClientPreLauncher'
 
 //Update the version in JenkinsFile as well as here!
-version = "0.0.2"
+version = "0.0.3"
 //Read above!
 
 def ENV = System.getenv()

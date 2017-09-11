@@ -11,7 +11,7 @@ node {
 
    stage "OSX Archive"
 
-   sh "./makeApp.sh 0.0.2.${env.BUILD_NUMBER}"
+   sh "./makeApp.sh 0.0.3.${env.BUILD_NUMBER}"
 
    sh "./gradlew crOSXUpload --stacktrace"
 
