@@ -96,7 +96,7 @@ func doUpdate(url string, hash string) error {
 	}
 	defer resp.Body.Close()
 	err = update.Apply(resp.Body, update.Options{
-		Checksum: []byte(hash),
+
 	})
 	if err != nil {
 		println(err)
