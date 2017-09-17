@@ -84,7 +84,7 @@ def getFileData() {
 	fileData['windows-amd64'] = getFileInfo("windows-amd64.exe")
 	fileData['darwin-amd64'] = getFileInfo("darwin-amd64")
 	fileData['linux-amd64'] = getFileInfo("linux-amd64")
-	fileData['linux-linux-386'] = getFileInfo("linux-386")
+	fileData['linux-386'] = getFileInfo("linux-386")
 
 	return fileData
 }
@@ -164,6 +164,7 @@ task crUpload(){
 		uploadFileToCR(getBinFile("linux-386"), "oneclient/launcher/versions")
 		uploadFileToCR(getBinFile("linux-386"), "oneclient/launcher/versions")
 		uploadFileToCR(new File(project.getBuildDir().getPath() + "/out/" + project.version  + "-fileData.json"), "oneclient/launcher/versions")
+		uploadFileToCR(new File(project.getBuildDir().getPath() + "/out/prelauncher_versions.json"), "oneclient/launcher")
 	}
 }
 
