@@ -146,33 +146,39 @@ task restoreVerison(){
 	}
 }
 
-def uploadFileToCR(file, location){
+def uploadFileToCR(file, location, ftp){
 	project.logger.lifecycle("Uploading " + file + " to creeperrepo")
+	ftp.storeFile(location + "/" + file.name, new FileInputStream(file))
+}
+
+def getFTPClient() {
 	def ftp = new FTPClient()
 	def host = project.getProperty('cr_host').toString()
 	ftp.connect(host)
 	ftp.login(project.getProperty('cr_user').toString(), project.getProperty('cr_pass').toString())
 	ftp.setFileType(FTP.BINARY_FILE_TYPE)
 	ftp.enterLocalPassiveMode()
-	ftp.storeFile(location + "/" + file.name, new FileInputStream(file))
+	return ftp
 }
 
 task crUpload(){
 	doLast {
-		uploadFileToCR(getBinFile("windows-386.exe"), "oneclient/launcher/versions")
-		uploadFileToCR(getBinFile("windows-amd64.exe"), "oneclient/launcher/versions")
-		uploadFileToCR(getBinFile("darwin-amd64"), "oneclient/launcher/versions")
-		uploadFileToCR(getBinFile("linux-amd64"), "oneclient/launcher/versions")
-		uploadFileToCR(getBinFile("linux-386"), "oneclient/launcher/versions")
-		uploadFileToCR(getBinFile("linux-386"), "oneclient/launcher/versions")
-		uploadFileToCR(new File(project.getBuildDir().getPath() + "/out/" + project.version  + "-fileData.json"), "oneclient/launcher/versions")
-		uploadFileToCR(new File(project.getBuildDir().getPath() + "/out/prelauncher_versions.json"), "oneclient/launcher")
+		def ftp = getFTPClient()
+		uploadFileToCR(getBinFile("windows-386.exe"), "oneclient/launcher/versions", ftp)
+		uploadFileToCR(getBinFile("windows-amd64.exe"), "oneclient/launcher/versions", ftp)
+		uploadFileToCR(getBinFile("darwin-amd64"), "oneclient/launcher/versions", ftp)
+		uploadFileToCR(getBinFile("linux-amd64"), "oneclient/launcher/versions", ftp)
+		uploadFileToCR(getBinFile("linux-386"), "oneclient/launcher/versions", ftp)
+		uploadFileToCR(getBinFile("linux-386"), "oneclient/launcher/versions", ftp)
+		uploadFileToCR(new File(project.getBuildDir().getPath() + "/out/" + project.version  + "-fileData.json"), "oneclient/launcher/versions", ftp)
+		uploadFileToCR(new File(project.getBuildDir().getPath() + "/out/prelauncher_versions.json"), "oneclient/launcher", ftp)
 	}
 }
 
 task crOSXUpload() {
 	doLast {
-		uploadFileToCR(new File(project.getBuildDir().getPath() + "/out/OneClient-" + project.version  + "-osx.zip"), "oneclient/launcher/versions")
+		def ftp = getFTPClient()
+		uploadFileToCR(new File(project.getBuildDir().getPath() + "/out/OneClient-" + project.version  + "-osx.zip"), "oneclient/launcher/versions", ftp)
 	}
 }
 
