@@ -11,6 +11,7 @@ buildscript {
 		classpath 'com.google.code.gson:gson:2.8.1'
 		classpath 'org.eclipse.jgit:org.eclipse.jgit:4.8.0.201706111038-r'
 		classpath 'commons-net:commons-net:3.3'
+		classpath 'org.apache.commons:commons-compress:1.14'
 	}
 }
 
